@@ -11,12 +11,32 @@
     --gray: #78909C;
     --bg: #f5f5f5;
     --card: #fff;
+    --text: #333;
+    --text-muted: #777;
+    --text-faint: #999;
+    --input-bg: #fafafa;
+    --input-border: #ccc;
+    --shadow: rgba(0,0,0,.08);
+    --shadow-sm: rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a2e;
+      --card: #16213e;
+      --text: #e0e0e0;
+      --text-muted: #a0a0a0;
+      --text-faint: #808080;
+      --input-bg: #1a1a2e;
+      --input-border: #3a3a5c;
+      --shadow: rgba(0,0,0,.3);
+      --shadow-sm: rgba(0,0,0,.2);
+    }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg);
-    color: #333;
+    color: var(--text);
     min-height: 100vh;
     padding: 1rem;
   }
@@ -25,7 +45,7 @@
     padding: 1.5rem 0 1rem;
   }
   header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
-  header p { color: #777; font-size: .95rem; }
+  header p { color: var(--text-muted); font-size: .95rem; }
 
   .controls {
     max-width: 700px;
@@ -33,24 +53,26 @@
     background: var(--card);
     border-radius: 12px;
     padding: 1.25rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    box-shadow: 0 1px 4px var(--shadow);
     display: flex;
     flex-wrap: wrap;
     gap: .75rem;
     align-items: end;
   }
   .field { display: flex; flex-direction: column; gap: .3rem; flex: 1; min-width: 140px; }
-  .field label { font-size: .8rem; font-weight: 600; color: #555; }
+  .field label { font-size: .8rem; font-weight: 600; color: var(--text-muted); }
   .field input, .field select {
     padding: .5rem .6rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     font-size: .95rem;
-    background: #fafafa;
+    background: var(--input-bg);
+    color: var(--text);
   }
   .filter-chips {
     display: flex; gap: .5rem; flex-wrap: wrap; width: 100%;
     margin-top: .25rem;
+    align-items: center;
   }
   .chip {
     padding: .4rem .9rem;
@@ -59,14 +81,28 @@
     font-size: .85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: .15s;
+    transition: opacity .2s, background .2s, border-color .2s;
     user-select: none;
   }
   .chip.active { opacity: 1; }
-  .chip:not(.active) { opacity: .4; }
+  .chip:not(.active) { opacity: .6; border-color: transparent !important; filter: grayscale(60%); }
   .chip-blau  { background: #e3f2fd; color: #1565C0; border-color: var(--blue); }
   .chip-gelb  { background: #fff9c4; color: #f57f17; border-color: var(--yellow); }
   .chip-grau  { background: #eceff1; color: #37474f; border-color: var(--gray); }
+
+  .chip-upcoming {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-color: #4caf50;
+    margin-left: auto;
+  }
+  .chip-upcoming:not(.active) { opacity: .6; border-color: transparent !important; filter: grayscale(60%); }
+  @media (prefers-color-scheme: dark) {
+    .chip-blau  { background: #1a2940; color: #64b5f6; }
+    .chip-gelb  { background: #3a3520; color: #fdd835; }
+    .chip-grau  { background: #263238; color: #b0bec5; }
+    .chip-upcoming { background: #1b3a1b; color: #81c784; }
+  }
 
   .next-box {
     max-width: 700px;
@@ -74,17 +110,33 @@
     background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
     border-radius: 12px;
     padding: 1.25rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    box-shadow: 0 1px 4px var(--shadow);
     text-align: center;
   }
+  @media (prefers-color-scheme: dark) {
+    .next-box { background: linear-gradient(135deg, #1b3a1b, #2a3a1b); }
+  }
   .next-box h2 { font-size: 1rem; color: #2e7d32; margin-bottom: .5rem; }
+  @media (prefers-color-scheme: dark) {
+    .next-box h2 { color: #81c784; }
+  }
   .next-items { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
   .next-item {
     padding: .5rem 1rem;
     border-radius: 10px;
     font-weight: 600;
     font-size: .95rem;
+    transition: transform .2s, box-shadow .2s;
   }
+  .next-item.urgent {
+    animation: pulse-urgency 2s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+  @keyframes pulse-urgency {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+    50% { box-shadow: 0 0 12px 4px rgba(244, 67, 54, .25); }
+  }
+  .next-item .icon { font-size: 1.2rem; margin-right: .3rem; }
 
   .results {
     max-width: 700px;
@@ -93,6 +145,19 @@
     flex-direction: column;
     gap: .5rem;
   }
+
+  .month-header {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: .75rem .25rem .25rem;
+    border-bottom: 2px solid var(--input-border);
+    margin-top: .5rem;
+  }
+  .month-header:first-child { margin-top: 0; }
+
   .row {
     display: flex;
     align-items: center;
@@ -100,22 +165,22 @@
     padding: .75rem 1rem;
     background: var(--card);
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    box-shadow: 0 1px 3px var(--shadow-sm);
     border-left: 4px solid transparent;
-    transition: .15s;
+    transition: transform .15s, opacity .3s, box-shadow .2s;
+    animation: fadeSlideIn .3s ease-out both;
   }
-  .row:hover { transform: translateX(3px); }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .row:hover { transform: translateX(3px); box-shadow: 0 2px 8px var(--shadow); }
   .row.blau  { border-left-color: var(--blue); }
   .row.gelb  { border-left-color: var(--yellow); }
   .row.grau  { border-left-color: var(--gray); }
-  .row .dot {
-    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
-  }
-  .row.blau .dot { background: var(--blue); }
-  .row.gelb .dot { background: var(--yellow); }
-  .row.grau .dot { background: var(--gray); }
+  .row .icon-cell { font-size: 1.1rem; flex-shrink: 0; width: 24px; text-align: center; }
   .row .date { font-weight: 600; min-width: 100px; }
-  .row .day  { color: #777; min-width: 30px; font-size: .85rem; }
+  .row .day  { color: var(--text-muted); min-width: 30px; font-size: .85rem; }
   .row .type { flex: 1; }
   .row .badge {
     font-size: .75rem;
@@ -127,25 +192,40 @@
     white-space: nowrap;
   }
   .row .badge.past { background: #fce4ec; color: #c62828; }
+  @media (prefers-color-scheme: dark) {
+    .row .badge { background: #1b3a1b; color: #81c784; }
+    .row .badge.past { background: #3a1b1b; color: #ef9a9a; }
+  }
 
   .count {
     max-width: 700px;
     margin: 0 auto .5rem;
     font-size: .85rem;
-    color: #999;
+    color: var(--text-faint);
     padding-left: .25rem;
   }
 
   .empty {
     text-align: center;
     padding: 3rem 1rem;
-    color: #999;
+    color: var(--text-faint);
     font-size: 1.1rem;
+  }
+
+  footer {
+    max-width: 700px;
+    margin: 2rem auto 1rem;
+    text-align: center;
+    font-size: .8rem;
+    color: var(--text-faint);
+    border-top: 1px solid var(--input-border);
+    padding-top: 1rem;
   }
 
   @media (max-width: 500px) {
     .controls { flex-direction: column; }
     .field { min-width: 100%; }
+    .chip-upcoming { margin-left: 0; }
   }
 </style>
 </head>
@@ -186,14 +266,19 @@
     </select>
   </div>
   <div class="filter-chips">
-    <span class="chip chip-blau active" data-type="Blaue Tonne" onclick="toggleChip(this)">Blaue Tonne</span>
-    <span class="chip chip-gelb active" data-type="Gelbe Tonne" onclick="toggleChip(this)">Gelbe Tonne</span>
-    <span class="chip chip-grau active" data-type="Graue Tonne" onclick="toggleChip(this)">Graue Tonne</span>
+    <span class="chip chip-blau active" data-type="Blaue Tonne" onclick="toggleChip(this)">&#x1F4E6; Blaue Tonne</span>
+    <span class="chip chip-gelb active" data-type="Gelbe Tonne" onclick="toggleChip(this)">&#x267B; Gelbe Tonne</span>
+    <span class="chip chip-grau active" data-type="Graue Tonne" onclick="toggleChip(this)">&#x1F5D1; Graue Tonne</span>
+    <span class="chip chip-upcoming active" id="upcomingToggle" onclick="toggleUpcoming(this)">Nur zukünftige</span>
   </div>
 </div>
 
 <div class="count" id="count"></div>
 <div class="results" id="results"></div>
+
+<footer>
+  Abfallkalender 2026 — Angaben ohne Gewähr. Änderungen durch den Entsorger vorbehalten.
+</footer>
 
 <script>
 const CSV_DATA = `Datum,Tonne
@@ -252,6 +337,8 @@ const CSV_DATA = `Datum,Tonne
 2026-12-31,Blaue Tonne`;
 
 const DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const MONTH_NAMES = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
 const entries = CSV_DATA.trim().split('\n').slice(1).map(line => {
   const [datum, tonne] = line.split(',');
@@ -278,11 +365,26 @@ function typeClass(tonne) {
   return 'grau';
 }
 
+function typeIcon(tonne) {
+  if (tonne.startsWith('Blaue')) return '&#x1F4E6;';
+  if (tonne.startsWith('Gelbe')) return '&#x267B;';
+  return '&#x1F5D1;';
+}
+
 function activeTypes() {
-  return [...document.querySelectorAll('.chip.active')].map(c => c.dataset.type);
+  return [...document.querySelectorAll('.chip[data-type].active')].map(c => c.dataset.type);
+}
+
+function isUpcomingOnly() {
+  return document.getElementById('upcomingToggle').classList.contains('active');
 }
 
 function toggleChip(el) {
+  el.classList.toggle('active');
+  render();
+}
+
+function toggleUpcoming(el) {
   el.classList.toggle('active');
   render();
 }
@@ -304,9 +406,13 @@ function renderNext() {
   const items = nextByType.map(e => {
     const daysLeft = Math.ceil((new Date(e.datum + 'T00:00:00') - new Date(t + 'T00:00:00')) / 86400000);
     const label = daysLeft === 0 ? 'heute' : daysLeft === 1 ? 'morgen' : `in ${daysLeft} Tagen`;
-    return `<div class="next-item" style="background:${
-      e.tonne.startsWith('Blaue') ? '#bbdefb' : e.tonne.startsWith('Gelbe') ? '#fff9c4' : '#cfd8dc'
-    }">${e.tonne}<br><small>${formatDate(e.datum)} (${dayName(e.datum)}) — ${label}</small></div>`;
+    const isUrgent = daysLeft <= 1;
+    const icon = e.tonne.startsWith('Blaue') ? '&#x1F4E6;' : e.tonne.startsWith('Gelbe') ? '&#x267B;' : '&#x1F5D1;';
+    const bg = e.tonne.startsWith('Blaue') ? '#bbdefb' : e.tonne.startsWith('Gelbe') ? '#fff9c4' : '#cfd8dc';
+    return `<div class="next-item${isUrgent ? ' urgent' : ''}" style="background:${bg}">
+      <span class="icon">${icon}</span>${e.tonne}<br>
+      <small>${formatDate(e.datum)} (${dayName(e.datum)}) — ${label}</small>
+    </div>`;
   }).join('');
 
   box.innerHTML = `<h2>Nächste Abholtermine</h2><div class="next-items">${items}</div>`;
@@ -318,11 +424,13 @@ function render() {
   const month = document.getElementById('monthSelect').value;
   const types = activeTypes();
   const t = today();
+  const upcomingOnly = isUpcomingOnly();
 
   let filtered = entries.filter(e => {
     if (e.datum < from || e.datum > to) return false;
     if (month && e.datum.slice(5, 7) !== month) return false;
     if (!types.includes(e.tonne)) return false;
+    if (upcomingOnly && e.datum < t) return false;
     return true;
   });
 
@@ -337,17 +445,30 @@ function render() {
 
   countEl.textContent = `${filtered.length} Termine`;
 
-  container.innerHTML = filtered.map(e => {
+  let html = '';
+  let currentMonth = '';
+
+  filtered.forEach((e, i) => {
+    const entryMonth = e.datum.slice(0, 7);
+    if (entryMonth !== currentMonth) {
+      currentMonth = entryMonth;
+      const monthIdx = parseInt(entryMonth.slice(5, 7)) - 1;
+      html += `<div class="month-header">${MONTH_NAMES[monthIdx]} ${entryMonth.slice(0, 4)}</div>`;
+    }
+
     const cls = typeClass(e.tonne);
     const past = e.datum < t;
-    return `<div class="row ${cls}">
-      <span class="dot"></span>
+    const icon = typeIcon(e.tonne);
+    html += `<div class="row ${cls}" style="animation-delay:${i * 0.03}s">
+      <span class="icon-cell">${icon}</span>
       <span class="day">${dayName(e.datum)}</span>
       <span class="date">${formatDate(e.datum)}</span>
       <span class="type">${e.tonne}</span>
       ${past ? '<span class="badge past">vergangen</span>' : e.datum === t ? '<span class="badge">heute</span>' : ''}
     </div>`;
-  }).join('');
+  });
+
+  container.innerHTML = html;
 }
 
 // Month shortcut: selecting a month updates date range
