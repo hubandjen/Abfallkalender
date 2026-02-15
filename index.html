@@ -409,7 +409,8 @@ function renderNext() {
     const isUrgent = daysLeft <= 1;
     const icon = e.tonne.startsWith('Blaue') ? '&#x1F4E6;' : e.tonne.startsWith('Gelbe') ? '&#x267B;' : '&#x1F5D1;';
     const bg = e.tonne.startsWith('Blaue') ? '#bbdefb' : e.tonne.startsWith('Gelbe') ? '#fff9c4' : '#cfd8dc';
-    return `<div class="next-item${isUrgent ? ' urgent' : ''}" style="background:${bg}">
+    const fg = e.tonne.startsWith('Blaue') ? '#0d47a1' : e.tonne.startsWith('Gelbe') ? '#e65100' : '#263238';
+    return `<div class="next-item${isUrgent ? ' urgent' : ''}" style="background:${bg};color:${fg}">
       <span class="icon">${icon}</span>${e.tonne}<br>
       <small>${formatDate(e.datum)} (${dayName(e.datum)}) — ${label}</small>
     </div>`;
